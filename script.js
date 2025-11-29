@@ -52,32 +52,46 @@ function switchCollection(newPath) {
 }
 
 function tryLoadImage(number, loadId) {
-    // 1. Load the image data first
     const img = new Image();
-    img.src = `${currentFolderPath}${number}${FILE_EXTENSION}`;
+    // Cache buster to ensure images update if you resize them
+    img.src = `${currentFolderPath}${number}${FILE_EXTENSION}?v=${Date.now()}`;
     
     img.onload = () => {
         if (loadId !== currentLoadId) return;
 
-        // 2. Create a CANVAS instead of an IMG
-        // Canvas allows seamless drawing without flashing
         const canvas = document.createElement('canvas');
         canvas.className = 'ceramic';
         
-        // Set internal resolution to match the image quality
+        // 1. Internal Resolution (High Quality)
         canvas.width = img.naturalWidth;
         canvas.height = img.naturalHeight;
 
-        // Draw the initial static image onto the canvas
+        // 2. Draw image
         const ctx = canvas.getContext('2d');
         ctx.drawImage(img, 0, 0);
 
         canvas.style.opacity = '0'; 
         canvas.dataset.id = number; 
-        
-        // Save the original Image Object for later resetting
-        // We attach it directly to the element's memory
         canvas.originalImageObject = img; 
+
+        // --- INTELLIGENT SIZING LOGIC ---
+        
+        // Base size: 15% of screen width
+        let displayWidth = window.innerWidth * 0.15; 
+        
+        // Limits: Don't get smaller than 120px or bigger than 300px (for normal items)
+        if (displayWidth < 120) displayWidth = 120; 
+        if (displayWidth > 300) displayWidth = 300; 
+
+        // Glazed Folder Boost
+        if (currentFolderPath.includes('glazed')) {
+            // 1.8x is a good balance. 2.0x might be too crowded.
+            displayWidth = displayWidth * 1.8; 
+        }
+
+        // Apply size to CSS
+        canvas.style.width = Math.floor(displayWidth) + 'px';
+        canvas.style.height = 'auto'; 
         
         document.body.appendChild(canvas);
         initCeramic(canvas);
@@ -92,13 +106,37 @@ switchCollection(currentFolderPath);
 function initCeramic(canvas) {
     const ctx = canvas.getContext('2d');
 
+    // Fade in effect
     setTimeout(() => { 
         canvas.style.opacity = '1'; 
         canvas.style.transition = 'opacity 0.5s ease'; 
     }, Math.random() * 500);
 
-    let x = Math.random() * (window.innerWidth - 200);
-    let y = Math.random() * (window.innerHeight - 200);
+    // --- SMART SPAWN LOGIC ---
+    // This prevents Big Mugs from spawning inside walls
+    
+    // 1. Measure the object
+    const width = canvas.offsetWidth;
+    const height = canvas.offsetHeight;
+
+    // 2. Measure the top ceiling (Nav Bar)
+    const desktopNav = document.getElementById('desktop-nav');
+    let topBoundary = 0;
+    if (desktopNav && getComputedStyle(desktopNav).display !== 'none') {
+        topBoundary = desktopNav.offsetHeight; 
+    }
+
+    // 3. Calculate safe spawn coordinates
+    // Ensure x is within screen width minus object width
+    let x = Math.random() * (window.innerWidth - width);
+    if (x < 0) x = 0; // Safety check
+
+    // Ensure y is between the Nav Bar and the Bottom
+    let availableHeight = window.innerHeight - height - topBoundary;
+    if (availableHeight < 0) availableHeight = 0; // Safety check
+    let y = topBoundary + (Math.random() * availableHeight);
+
+    // Initial Velocity
     let vx = (Math.random() - 0.5) * 2; 
     let vy = (Math.random() - 0.5) * 2;
 
@@ -108,8 +146,10 @@ function initCeramic(canvas) {
 
     // Spin State
     let spinInterval = null;
+    let spinPauseTimeout = null; 
     let spinImages = []; 
     let currentFrame = 0;
+    let spinDirection = 1; 
     let hasCheckedForSpin = false;
     let hasSpin = false; 
 
@@ -126,18 +166,33 @@ function initCeramic(canvas) {
             x += vx;
             y += vy;
             
+            // Speed Clamping (keeps them drifting gently)
             let currentSpeed = Math.sqrt(vx*vx + vy*vy);
             if (currentSpeed > 2) { vx *= 0.96; vy *= 0.96; } 
             else if (currentSpeed < 0.5) { vx *= 1.01; vy *= 1.01; }
 
-            const width = canvas.offsetWidth;
-            const height = canvas.offsetHeight;
+            const currentWidth = canvas.offsetWidth;
+            const currentHeight = canvas.offsetHeight;
             const bounds = { w: window.innerWidth, h: window.innerHeight };
 
-            if (x + width > bounds.w) { x = bounds.w - width; vx *= -1; }
+            // --- NAV BAR COLLISION CHECK ---
+            let currentTopBoundary = 0;
+            if (desktopNav && getComputedStyle(desktopNav).display !== 'none') {
+                currentTopBoundary = desktopNav.offsetHeight; 
+            }
+
+            // Wall Bouncing
+            if (x + currentWidth > bounds.w) { x = bounds.w - currentWidth; vx *= -1; }
             if (x < 0) { x = 0; vx *= -1; }
-            if (y + height > bounds.h) { y = bounds.h - height; vy *= -1; }
-            if (y < 0) { y = 0; vy *= -1; }
+            
+            // Floor Bouncing
+            if (y + currentHeight > bounds.h) { y = bounds.h - currentHeight; vy *= -1; }
+            
+            // Ceiling (Nav Bar) Bouncing
+            if (y < currentTopBoundary) { 
+                y = currentTopBoundary; 
+                vy *= -1; 
+            }
         }
 
         canvas.style.transform = `translate3d(${x}px, ${y}px, 0)`;
@@ -145,7 +200,7 @@ function initCeramic(canvas) {
     }
     animate();
 
-    // 2. SPIN LOGIC (Canvas Paint Method)
+    // 2. SPIN LOGIC
     
     function startSpinning() {
         if (!hasCheckedForSpin) {
@@ -156,6 +211,8 @@ function initCeramic(canvas) {
     }
 
     function checkForSpinFrames(id) {
+        spinImages.push(canvas.originalImageObject);
+
         const url = `${currentFolderPath}${id}_1${FILE_EXTENSION}`;
         const testImg = new Image();
         testImg.src = url;
@@ -188,41 +245,65 @@ function initCeramic(canvas) {
     }
 
     function playSpin() {
-        if (spinInterval) clearInterval(spinInterval);
+        if (spinInterval || spinPauseTimeout) return;
         
         spinInterval = setInterval(() => {
-            if (spinImages.length > 0) {
-                currentFrame = (currentFrame + 1) % spinImages.length;
+            if (spinImages.length > 1) {
                 
-                // --- SEAMLESS DRAWING ---
-                // 1. Clear the canvas (optional, but good for transparency)
+                currentFrame += spinDirection;
+                let hitEdge = false;
+
+                // Pendulum Logic
+                if (currentFrame >= spinImages.length - 1) {
+                    currentFrame = spinImages.length - 1; 
+                    hitEdge = true;
+                    spinDirection = -1; // Reverse
+                } else if (currentFrame <= 0) {
+                    currentFrame = 0; 
+                    hitEdge = true;
+                    spinDirection = 1; // Forward
+                }
+                
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                // 2. Paint the new frame
-                // Since this is a Canvas draw call, there is NO flashing.
                 ctx.drawImage(spinImages[currentFrame], 0, 0);
+
+                // Pause at the edges
+                if (hitEdge) {
+                    clearInterval(spinInterval);
+                    spinInterval = null;
+
+                    spinPauseTimeout = setTimeout(() => {
+                        spinPauseTimeout = null;
+                        playSpin(); 
+                    }, 1000); // 1 Second Pause
+                }
             }
-        }, 250); 
+        }, 180); 
     }
 
     function stopSpinning() {
         if (spinInterval) clearInterval(spinInterval);
+        if (spinPauseTimeout) clearTimeout(spinPauseTimeout);
         
-        // Reset to original image ONLY if we were spinning
-        if (hasSpin && canvas.originalImageObject) {
+        spinInterval = null;
+        spinPauseTimeout = null;
+        
+        // Reset to original image
+        if (canvas.originalImageObject) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.drawImage(canvas.originalImageObject, 0, 0);
+            
+            // Reset animation state
+            currentFrame = 0; 
+            spinDirection = 1;
         }
     }
 
-
     // 3. POINTER EVENTS
-
     function onPointerDown(e) {
         isDragging = true;
         window.isGlobalPaused = true; 
-        
         startSpinning();
-
         canvas.setPointerCapture(e.pointerId); 
         canvas.style.zIndex = 1000; 
         canvas.style.transition = 'none'; 
@@ -248,9 +329,7 @@ function initCeramic(canvas) {
         if (!isDragging) return;
         isDragging = false;
         window.isGlobalPaused = false; 
-        
         stopSpinning();
-
         canvas.releasePointerCapture(e.pointerId);
         canvas.style.zIndex = '';
         const maxSpeed = 20;
