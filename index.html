@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ceramics Room</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Desktop Navigation -->
+    <nav id="desktop-nav">
+        <!-- data-folder must match your folder names EXACTLY -->
+        <a href="#" class="nav-link active" data-folder="ceramics/fantasy/">Fantasy</a>
+        <a href="#" class="nav-link" data-folder="ceramics/glazed_mugs/">Glazed Mugs</a>
+        <a href="#" class="nav-link" data-folder="ceramics/beginnings/">Beginnings</a>
+    </nav>
+
+    <!-- Mobile Toggle (The Asterisk) -->
+    <button id="mobile-toggle">*</button>
+
+    <!-- Mobile Overlay Menu -->
+    <div id="mobile-overlay">
+        <div class="mobile-links">
+            <!-- Same links here for mobile -->
+            <a href="#" class="nav-link" data-folder="ceramics/fantasy/">Fantasy</a>
+            <a href="#" class="nav-link" data-folder="ceramics/glazed_mugs/">Glazed Mugs</a>
+            <a href="#" class="nav-link" data-folder="ceramics/beginnings/">Beginnings</a>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
