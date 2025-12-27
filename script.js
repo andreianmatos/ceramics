@@ -106,7 +106,8 @@ function createPieceElement(imgObj) {
     const canvas = document.createElement('canvas');
     canvas.className = 'ceramic';
     const ctx = canvas.getContext('2d');
-    canvas.width = imgObj.naturalWidth; canvas.height = imgObj.naturalHeight;
+    canvas.width = imgObj.naturalWidth; 
+    canvas.height = imgObj.naturalHeight;
     ctx.drawImage(imgObj, 0, 0);
 
     let scale = CONFIG.pieces.minScale + Math.random() * (CONFIG.pieces.maxScale - CONFIG.pieces.minScale);
@@ -116,20 +117,56 @@ function createPieceElement(imgObj) {
 
     let x = Math.random() * (window.innerWidth - w);
     let y = Math.random() * (window.innerHeight - w);
-    let vx = (Math.random() - 0.5) * 0.5, vy = (Math.random() - 0.5) * 0.5, isDragging = false;
+    let vx = (Math.random() - 0.5) * 0.5;
+    let vy = (Math.random() - 0.5) * 0.5;
+    
+    let isDragging = false;
+    let dragOffsetX = 0;
+    let dragOffsetY = 0;
 
     function update() {
         if (!isDragging && !isPaused) {
-            x += vx; y += vy;
+            x += vx; 
+            y += vy;
+            // Boundary checks
             if (x < 0 || x > window.innerWidth - canvas.offsetWidth) vx *= -1;
             if (y < 0 || y > window.innerHeight - canvas.offsetHeight) vy *= -1;
         }
         canvas.style.transform = `translate3d(${x}px, ${y}px, 0)`;
         requestAnimationFrame(update);
     }
-    canvas.addEventListener('pointerdown', (e) => { if(!isPaused){ isDragging = true; canvas.setPointerCapture(e.pointerId); }});
-    canvas.addEventListener('pointermove', (e) => { if (isDragging) { x = e.clientX - canvas.offsetWidth/2; y = e.clientY - canvas.offsetHeight/2; } });
-    canvas.addEventListener('pointerup', () => { isDragging = false; });
+
+    canvas.addEventListener('pointerdown', (e) => {
+        if (!isPaused) {
+            isDragging = true;
+            canvas.style.cursor = 'grabbing';
+            canvas.setPointerCapture(e.pointerId);
+            
+            // Calculate where inside the piece the user clicked
+            dragOffsetX = e.clientX - x;
+            dragOffsetY = e.clientY - y;
+        }
+    });
+
+    canvas.addEventListener('pointermove', (e) => {
+        if (isDragging) {
+            // Move the piece relative to the initial grab point
+            x = e.clientX - dragOffsetX;
+            y = e.clientY - dragOffsetY;
+        }
+    });
+
+    canvas.addEventListener('pointerup', (e) => {
+        isDragging = false;
+        canvas.style.cursor = 'grab';
+        canvas.releasePointerCapture(e.pointerId);
+    });
+
+    canvas.addEventListener('pointercancel', (e) => {
+        isDragging = false;
+        canvas.releasePointerCapture(e.pointerId);
+    });
+
     ceramicsLayer.appendChild(canvas);
     update();
     return canvas;
