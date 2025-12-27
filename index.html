@@ -3,50 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ceramics Room</title>
+    <title>Ceramics Portfolio</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <!-- Desktop Navigation -->
-    <nav id="desktop-nav">
-        
-        <!-- Item 1 -->
-        <div class="nav-item">
-            <a href="#" class="nav-link" data-folder="ceramics/glazed_mugs/">Glazed Only</a>
-            <span class="nav-subtitle">Glazed industrial forms.</span>
-        </div>
+    <div class="ui-nav-mask"></div>
 
-        <!-- Item 2 -->
-        <div class="nav-item">
-            <a href="#" class="nav-link active" data-folder="ceramics/fantasy/">Rosenrot</a>
-            <span class="nav-subtitle">2025</span>
-        </div>
-
-        <!-- Item 3 -->
-        <div class="nav-item">
-            <a href="#" class="nav-link" data-folder="ceramics/beginnings/">Early Works</a>
-            <span class="nav-subtitle">2023</span>
-        </div>
-
+    <nav id="top-nav">
+        <a id="nav-quarto" class="nav-link active">Home</a>
+        <a id="nav-catalogo" class="nav-link">Pieces</a>
+        <a id="nav-about" class="nav-link">About</a>
     </nav>
 
-    <!-- Desktop Instructions -->
-    <div id="instructions">Drag to move. Hold to spin.</div>
+    <div id="quarto-container">
+        <div id="doodles-layer"></div>
+        <div id="ceramics-layer"></div>
+    </div>
 
-    <!-- Mobile Toggle (The Asterisk) -->
-    <button id="mobile-toggle">*</button>
+    <div id="catalogue-overlay" class="overlay">
+        <div class="seamless-grid"></div>
+    </div>
 
-    <!-- Mobile Overlay Menu -->
-    <div id="mobile-overlay">
-        <div class="mobile-links">
-            <!-- Same links here for mobile -->
-            <a href="#" class="nav-link" data-folder="ceramics/fantasy/">Rosenrot</a>
-            <a href="#" class="nav-link" data-folder="ceramics/glazed_mugs/">Glazed Only</a>
-            <a href="#" class="nav-link" data-folder="ceramics/beginnings/">Early Works</a>
+    <div id="about-overlay" class="overlay">
+        <div class="about-content-wrapper">
+            <a href="mailto:hello@studio.com" class="about-email">andreiangmatos@gmail.com</a>
+            <a href="#" class="instagram-text">Instagram</a>
         </div>
     </div>
-    
+
     <script src="script.js"></script>
 </body>
 </html>

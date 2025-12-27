@@ -1,195 +1,153 @@
-body {
-    margin: 0;
-    padding: 0;
-    background-color: #f4f1ea; 
-    overflow: hidden; 
-    height: 100vh;
-    width: 100vw;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; /* Clean font */
-    touch-action: none;
+/* --- BASE & RESET --- */
+* { box-sizing: border-box; scrollbar-width: none; -ms-overflow-style: none; }
+*::-webkit-scrollbar { display: none; }
+
+body, html {
+    margin: 0; padding: 0;
+    background-color: #f4f1ea;
+    background-image: radial-gradient(#e8e4db 1.2px, transparent 1.2px);
+    background-size: 24px 24px;
+    font-family: 'Instrument Sans', sans-serif; 
+    overflow: hidden; width: 100%; height: 100svh;
 }
 
-/* --- CERAMICS (EXISTING STYLES) --- */
-.ceramic {
-    position: absolute;
-    top: 0;
-    left: 0;
-    cursor: grab;
-    user-select: none;
-    width: 15vw;       
-    min-width: 120px; 
-    max-width: 500px;
-    filter: drop-shadow(5px 10px 15px rgba(0,0,0,0.15));
-    will-change: transform; 
-    -webkit-user-drag: none;
-    /* Ensure ceramics are below the menu */
-    z-index: 10; 
+/* --- REFINED RADIAL BLUR (Permanent & Tight) --- */
+.ui-nav-mask {
+    position: fixed; top: 0; left: 0; 
+    width: 350px; height: 350px; 
+    z-index: 10000; pointer-events: none;
+    
+    backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+    
+    /* Radial mask centered at the menu zone */
+    mask-image: radial-gradient(circle at 65px 65px, black 0%, rgba(0,0,0,0.4) 30%, transparent 65%);
+    -webkit-mask-image: radial-gradient(circle at 65px 65px, black 0%, rgba(0,0,0,0.4) 30%, transparent 65%);
+    
+    opacity: 1; 
 }
 
-.ceramic:active {
-    cursor: grabbing;
-    filter: drop-shadow(15px 25px 25px rgba(0,0,0,0.25));
-    z-index: 100; /* Higher than other ceramics, lower than menu */
+#top-nav {
+    position: fixed; top: 40px; left: 45px; 
+    display: flex; flex-direction: column; gap: 10px; z-index: 11000;
 }
-
-/* --- NAVIGATION STYLES --- */
-
-/* Shared Link Styles */
 .nav-link {
-    text-decoration: none;
-    color: #000;
-    text-transform: uppercase;
-    font-size: 14px;
-    letter-spacing: 1px;
-    cursor: pointer;
-    opacity: 0.5;
-    transition: opacity 0.3s;
+    text-decoration: none; color: #000; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; font-weight: 600;
+    opacity: 0.25; cursor: pointer; transition: 0.3s;
+    position: relative; width: fit-content;
+}
+.nav-link.active { opacity: 1; }
+.nav-link.active::before { content: '*'; position: absolute; left: -16px; top: -1px; }
+
+/* --- QUARTO (ROOM) --- */
+#quarto-container { width: 100%; height: 100svh; transition: filter 0.8s ease; z-index: 10; }
+#quarto-container.dimmed { filter: blur(12px) grayscale(0.2); }
+.ceramic { position: absolute; cursor: grab; opacity: 0; transform: scale(0.8); transition: opacity 0.8s, transform 0.8s cubic-bezier(0.2, 1, 0.3, 1); }
+.ceramic.appeared { opacity: 1; transform: scale(1); }
+.doodle { position: absolute; background-size: contain; background-repeat: no-repeat; opacity: 0; transition: opacity 1.5s ease; pointer-events: none; image-rendering: crisp-edges; }
+
+/* --- OVERLAYS --- */
+.overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100svh;
+    z-index: 5000; opacity: 0; visibility: hidden;
+    transition: opacity 0.4s ease, visibility 0.4s ease;
+    background: #f4f1ea;
+    overflow-y: auto;
+}
+.overlay-open { opacity: 1; visibility: visible; }
+
+#about-overlay, #catalogue-overlay {
+    background: rgba(244, 241, 234, 0.8);
+    backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
 }
 
-.nav-link:hover, .nav-link.active {
-    opacity: 1;
+/* --- ABOUT SECTION STYLING --- */
+#about-overlay { display: flex; align-items: center; justify-content: center; }
+.about-content-wrapper { 
+    text-align: center; 
+    max-width: 550px; 
+    width: 85%; 
+    padding-top: 40px; 
+}
+.about-text { 
+    font-size: 22px; 
+    line-height: 1.5; 
+    color: #000; 
+    margin-bottom: 45px; 
+    font-weight: 400;
+    letter-spacing: -0.01em;
+}
+.about-email { 
+    display: block; 
+    text-decoration: none; 
+    color: #000; 
+    font-size: 10px; 
+    font-weight: 700; 
+    text-transform: uppercase; 
+    letter-spacing: 0.2em; 
+    margin-bottom: 20px;
+    opacity: 0.6;
+    transition: 0.3s;
+}
+.about-email:hover { opacity: 1; }
+.instagram-text { 
+    color: #cc0000; 
+    font-size: 11px; 
+    font-weight: 800; 
+    text-transform: uppercase; 
+    text-decoration: none; 
+    letter-spacing: 0.15em;
+    transition: 0.3s;
+}
+.instagram-text:hover { color: #000; }
+
+/* --- CATALOGUE GRID --- */
+.seamless-grid {
+    display: grid; 
+    grid-template-columns: repeat(3, minmax(0, 1fr)); 
+    gap: 30px; 
+    padding: 120px 45px 100px;
 }
 
-/* 1. Desktop Nav */
-#desktop-nav {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    display: flex;
-    justify-content: center; /* Center the links */
-    gap: 40px;
-    padding: 20px;
-    z-index: 2000; /* Above everything */
-    pointer-events: auto;
+.cat-item {
+    position: relative; 
+    background: rgba(255, 255, 255, 0.5); 
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    height: 70svh; 
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    transition: background 0.4s ease;
 }
 
-/* Add this to style.css */
-
-/* 1. The Container for Link + Text */
-.nav-item {
-    display: flex;
-    flex-direction: column; /* Stacks them vertically */
-    align-items: center;    /* Centers them horizontally */
-    text-align: center;     /* Ensures text is centered if it wraps */
-    position: relative;
+/* UNAVAILABLE (Keep color, change background) */
+.cat-item.unavailable { 
+    background: #e8e4db; /* Distinct darker tone for archive */
+    border: 1px dashed rgba(0,0,0,0.1);
+    opacity: 0.9;
 }
+.unavailable .cat-info { background: rgba(0,0,0,0.03); }
 
-/* 2. The Small Text Styling */
-/* 2. The Small Text Styling */
-.nav-subtitle {
-    /* HIDE IT BY DEFAULT */
-    display: none; 
-    
-    font-size: 10px;      
-    margin-top: 6px;      
-    color: #000;
-    opacity: 0.6;          
-    letter-spacing: 0.5px;
-    pointer-events: none;  
-    text-transform: none;  
-    font-weight: normal;
-    max-width: 150px;      
-    line-height: 1.2;
-    
-    /* Smooth fade in animation */
-    animation: fadeIn 0.4s ease forwards;
-}
+.image-scroller { display: flex; width: 100%; height: 75%; overflow-x: auto; scroll-snap-type: x mandatory; }
+.image-scroller img { flex: 0 0 100%; width: 100%; height: 100%; object-fit: contain; padding: 30px; scroll-snap-align: center; }
 
-/* --- THE MAGIC PART --- */
-/* This says: "If .nav-link has 'active' class, show the .nav-subtitle next to it" */
-.nav-link.active + .nav-subtitle {
-    display: block;
-}
+.dot-pagination { position: absolute; bottom: 100px; width: 100%; display: flex; justify-content: center; gap: 6px; }
+.dot { width: 4px; height: 4px; background: rgba(0,0,0,0.1); border-radius: 50%; transition: 0.3s; }
+.dot.active { background: #000; transform: scale(1.4); }
 
-/* --- BOTTOM INSTRUCTIONS --- */
-#instructions {
-    position: fixed;
-    bottom: 30px;        /* Distance from bottom */
-    width: 100%;         /* Spans full width for centering */
-    text-align: center;
-    
-    font-size: 11px;
-    font-weight: normal;
-    color: #000;
-    opacity: 0.4;        /* Subtle and faint */
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    
-    /* VERY IMPORTANT: */
-    pointer-events: none; /* Allows you to click 'through' text to grab ceramics */
-    z-index: 0;           /* Puts text behind the ceramics */
-    user-select: none;    /* Prevents highlighting the text */
-}
+.cat-info { padding: 18px 25px; display: flex; flex-direction: column; gap: 6px; flex-grow: 1; background: rgba(255,255,255,0.2); }
+.info-header { display: flex; justify-content: space-between; align-items: baseline; }
+.cat-info h3 { margin: 0; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+.status { font-size: 9px; font-weight: 800; color: #8b5e3c; margin: 0; }
+.unavailable .status { color: #888; }
+.info-details p { margin: 0; font-size: 11px; color: #666; }
 
-/* Define the fade-in animation */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-5px); }
-    to { opacity: 0.6; transform: translateY(0); }
-}
-
-/* 2. Mobile Toggle (The Asterisk) */
-#mobile-toggle {
-    display: none; /* Hidden on desktop */
-    position: fixed;
-    top: 10px;
-    right: 20px;
-    background: none;
-    border: none;
-    font-size: 40px;
-    line-height: 1;
-    cursor: pointer;
-    z-index: 3000; /* Above the overlay */
-    padding: 0;
-    color: #000;
-}
-
-/* 3. Mobile Overlay */
-#mobile-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: #f4f1ea; /* Same as body color */
-    z-index: 2500;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    
-    /* Animation for opening */
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.4s ease;
-}
-
-#mobile-overlay.open {
-    opacity: 1;
-    pointer-events: auto;
-}
-
-#mobile-overlay .mobile-links {
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
-    text-align: center;
-}
-
-#mobile-overlay .nav-link {
-    font-size: 24px; /* Bigger on mobile */
-    opacity: 1;
-}
-
-/* --- RESPONSIVE LOGIC --- */
-@media (max-width: 768px) {
-    #desktop-nav {
-        display: none;
-    }
-    #mobile-toggle {
-        display: block;
-    }
-    #instructions {
-        display: none;
+/* --- RESPONSIVE ADJUSTMENTS --- */
+@media (max-width: 1100px) {
+    .seamless-grid { grid-template-columns: 1fr; padding: 140px 20px 80px; gap: 40px; }
+    .cat-item { height: 60svh; max-width: 550px; margin: 0 auto; }
+    .about-text { font-size: 19px; }
+    .ui-nav-mask { 
+        width: 100%; height: 280px; 
+        mask-image: radial-gradient(circle at 50px 50px, black 0%, transparent 70%);
+        -webkit-mask-image: radial-gradient(circle at 50px 50px, black 0%, transparent 70%);
     }
 }
