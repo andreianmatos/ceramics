@@ -2,27 +2,34 @@
 * { box-sizing: border-box; scrollbar-width: none; -ms-overflow-style: none; }
 *::-webkit-scrollbar { display: none; }
 
-body, html {
-    margin: 0; padding: 0;
+/* Pattern Definition to reuse */
+.dot-pattern {
     background-color: #f4f1ea;
     background-image: radial-gradient(#e8e4db 1.2px, transparent 1.2px);
     background-size: 24px 24px;
+}
+
+body, html {
+    margin: 0; padding: 0;
     font-family: 'Instrument Sans', sans-serif; 
     overflow: hidden; width: 100%; height: 100svh;
 }
 
-/* --- REFINED RADIAL BLUR (Permanent & Tight) --- */
+body {
+    extend: .dot-pattern; /* Apply pattern to body */
+    background-color: #f4f1ea;
+    background-image: radial-gradient(#e8e4db 1.2px, transparent 1.2px);
+    background-size: 24px 24px;
+}
+
+/* --- REFINED RADIAL BLUR --- */
 .ui-nav-mask {
     position: fixed; top: 0; left: 0; 
     width: 350px; height: 350px; 
     z-index: 10000; pointer-events: none;
-    
     backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
-    
-    /* Radial mask centered at the menu zone */
     mask-image: radial-gradient(circle at 65px 65px, black 0%, rgba(0,0,0,0.4) 30%, transparent 65%);
     -webkit-mask-image: radial-gradient(circle at 65px 65px, black 0%, rgba(0,0,0,0.4) 30%, transparent 65%);
-    
     opacity: 1; 
 }
 
@@ -50,14 +57,18 @@ body, html {
     position: fixed; top: 0; left: 0; width: 100%; height: 100svh;
     z-index: 5000; opacity: 0; visibility: hidden;
     transition: opacity 0.4s ease, visibility 0.4s ease;
-    background: #f4f1ea;
+    /* Added pattern here */
+    background-color: #f4f1ea;
+    background-image: radial-gradient(#e8e4db 1.2px, transparent 1.2px);
+    background-size: 24px 24px;
     overflow-y: auto;
 }
 .overlay-open { opacity: 1; visibility: visible; }
 
 #about-overlay, #catalogue-overlay {
-    background: rgba(244, 241, 234, 0.8);
-    backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
+    /* Slightly transparent to keep the depth, but pattern is repeated above */
+    background-color: rgba(244, 241, 234, 0.85);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
 }
 
 /* --- ABOUT SECTION STYLING --- */
@@ -103,47 +114,59 @@ body, html {
 /* --- CATALOGUE GRID --- */
 .seamless-grid {
     display: grid; 
-    grid-template-columns: repeat(3, minmax(0, 1fr)); 
+    grid-template-columns: repeat(3, 1fr); 
     gap: 30px; 
     padding: 120px 45px 100px;
+    width: 100%;
 }
 
 .cat-item {
     position: relative; 
-    background: rgba(255, 255, 255, 0.5); 
-    border: 1px solid rgba(0, 0, 0, 0.04);
+    background: rgba(255, 255, 255, 0.4); 
+    border: 1px solid rgba(0, 0, 0, 0.06);
     height: 70svh; 
     display: flex; flex-direction: column;
     overflow: hidden;
     transition: background 0.4s ease;
+    width: 100%; /* Force uniform width */
 }
 
-/* UNAVAILABLE (Keep color, change background) */
 .cat-item.unavailable { 
-    background: #e8e4db; /* Distinct darker tone for archive */
+    background: rgba(232, 228, 219, 0.6); 
     border: 1px dashed rgba(0,0,0,0.1);
-    opacity: 0.9;
 }
-.unavailable .cat-info { background: rgba(0,0,0,0.03); }
 
-.image-scroller { display: flex; width: 100%; height: 75%; overflow-x: auto; scroll-snap-type: x mandatory; }
+.image-scroller { display: flex; width: 100%; height: 70%; overflow-x: auto; scroll-snap-type: x mandatory; }
 .image-scroller img { flex: 0 0 100%; width: 100%; height: 100%; object-fit: contain; padding: 30px; scroll-snap-align: center; }
 
-.dot-pagination { position: absolute; bottom: 100px; width: 100%; display: flex; justify-content: center; gap: 6px; }
+.dot-pagination { position: absolute; top: 65%; width: 100%; display: flex; justify-content: center; gap: 6px; }
 .dot { width: 4px; height: 4px; background: rgba(0,0,0,0.1); border-radius: 50%; transition: 0.3s; }
 .dot.active { background: #000; transform: scale(1.4); }
 
-.cat-info { padding: 18px 25px; display: flex; flex-direction: column; gap: 6px; flex-grow: 1; background: rgba(255,255,255,0.2); }
-.info-header { display: flex; justify-content: space-between; align-items: baseline; }
-.cat-info h3 { margin: 0; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
-.status { font-size: 9px; font-weight: 800; color: #8b5e3c; margin: 0; }
-.unavailable .status { color: #888; }
-.info-details p { margin: 0; font-size: 11px; color: #666; }
+.cat-info { padding: 25px; display: flex; flex-direction: column; gap: 8px; flex-grow: 1; background: rgba(255,255,255,0.3); }
+.info-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
+.cat-info h3 { margin: 0; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+
+/* Status styling updated */
+.status { font-size: 10px; font-weight: 700; color: #000; margin: 0; text-transform: uppercase; letter-spacing: 0.05em; }
+.unavailable .status { color: #999; }
+
+/* Size/Detail font increased */
+.info-details p { margin: 0; font-size: 14px; color: #333; line-height: 1.4; }
+.info-details p.extra { font-size: 13px; color: #666; margin-top: 2px; }
 
 /* --- RESPONSIVE ADJUSTMENTS --- */
 @media (max-width: 1100px) {
-    .seamless-grid { grid-template-columns: 1fr; padding: 140px 20px 80px; gap: 40px; }
-    .cat-item { height: 60svh; max-width: 550px; margin: 0 auto; }
+    .seamless-grid { 
+        grid-template-columns: 1fr; /* Single column */
+        padding: 120px 20px 80px; 
+        gap: 20px; 
+    }
+    .cat-item { 
+        height: 65svh; 
+        width: 100%; /* Ensure boxes don't vary in width */
+        max-width: none; /* Remove the restriction that caused gaps */
+    }
     .about-text { font-size: 19px; }
     .ui-nav-mask { 
         width: 100%; height: 280px; 

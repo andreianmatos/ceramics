@@ -7,14 +7,14 @@ const CATALOGUE_DATA = {
         14: { title: "Little Bawl", size: "", detail: "Handbuilt. Glazed." },
         24: { title: "Small vase", size: "", detail: "Handbuilt Form. Glazed." },
     },
-    unavailable: {
+     /*,unavailable: {
         10: { title: "Mug", size: "", detail: "Industrial Form. Glazed. Piece broken below." },
         4: { title: "Box with Lid", size: "", detail: "Handbuilt. Glazed." },
         5: { title: "Small vase", size: "", detail: "Handbuilt. Glazed." },
         18: { title: "Coffee Cup", size: "", detail: "Handbuilt. Glazed." },
         8: { title: "Tiny Box", size: "", detail: "Handbuilt. Glazed." },
         7: { title: "Cup", size: "", detail: "Handbuilt. Glazed." },
-    }
+    } */
 };
 
 const CONFIG = {
