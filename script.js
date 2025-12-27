@@ -10,7 +10,10 @@ const CATALOGUE_DATA = {
     unavailable: {
         10: { title: "Mug", size: "", detail: "Industrial Form. Glazed. Piece broken below." },
         4: { title: "Box with Lid", size: "", detail: "Handbuilt. Glazed." },
-        5: { title: "Small vase", size: "", detail: "Handbuilt. Glazed." }
+        5: { title: "Small vase", size: "", detail: "Handbuilt. Glazed." },
+        18: { title: "Coffee Cup", size: "", detail: "Handbuilt. Glazed." },
+        8: { title: "Tiny Box", size: "", detail: "Handbuilt. Glazed." },
+        7: { title: "Cup", size: "", detail: "Handbuilt. Glazed." },
     }
 };
 
@@ -23,8 +26,8 @@ const CONFIG = {
 const FOLDERS = ['ceramics/favorites/'];
 const DOODLE_FOLDER = 'drawings/';
 const SELL_CONFIG = [
-    { path: 'sell/available/', status: 'available', label: 'Available' },
-    { path: 'sell/unavailable/', status: 'unavailable', label: 'Unavailable' }
+    { path: 'sell/available/', status: 'available', label: 'For Sale' },
+    { path: 'sell/unavailable/', status: 'unavailable', label: '' }
 ];
 
 const FILE_EXT = '.png';
