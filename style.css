@@ -21,41 +21,42 @@ body {
     background-size: 24px 24px;
 }
 
-/* --- REFINED RADIAL BLUR --- */
+/* --- REFINED RADIAL BLUR (SQUARE-PROOF VERSION) --- */
 .ui-nav-mask {
     position: fixed; 
     top: 0; 
     left: 0; 
-    /* 1. Make the container much larger so the gradient has room to disappear */
-    width: 300px; 
-    height: 300px; 
+    /* 1. Smaller container */
+    width: 250px; 
+    height: 250px; 
     z-index: 10000; 
     pointer-events: none;
     
-    /* 2. Intense blur */
-    backdrop-filter: blur(60px); 
-    -webkit-backdrop-filter: blur(60px);
+    /* 2. Body color background to hide ceramics behind letters */
+    background-color: #f4f1ea; 
 
-    /* 3. THE SECRET TO SEAMLESS: 
-       We start solid black, but we MUST hit 'transparent' well before the 500px edge.
-       By stopping at 60%, the blur vanishes into thin air long before it hits the "square" edge. */
+    /* 3. High blur but slightly less than before to keep it tighter */
+    backdrop-filter: blur(40px); 
+    -webkit-backdrop-filter: blur(40px);
+
+    /* 4. TIGHTER MASK: 
+       It stays solid black for 20%, then vanishes completely by 60%.
+       Since 60% of 250px is 150px, the blur is GONE before it hits the 250px edge.
+       This is what kills the square. */
     mask-image: radial-gradient(
         circle at 65px 65px, 
         black 0%, 
-        rgba(0, 0, 0, 1) 20%, 
-        rgba(0, 0, 0, 0.4) 40%, 
-        transparent 65%
+        black 20%, 
+        transparent 60%
     );
     -webkit-mask-image: radial-gradient(
         circle at 65px 65px, 
         black 0%, 
-        rgba(0, 0, 0, 1) 20%, 
-        rgba(0, 0, 0, 0.4) 40%, 
-        transparent 65%
+        black 20%, 
+        transparent 60%
     );
     
-    /* 4. Keep this at 1 for maximum intensity, the mask handles the softness */
-    opacity: 0.9; 
+    opacity: 0.95; 
 }
 
 #top-nav {
@@ -100,13 +101,13 @@ body {
 
 #about-overlay, #catalogue-overlay {
     background-color: rgba(244, 241, 234, 0.85);
-    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
 }
 
 /* --- ABOUT SECTION STYLING --- */
 #about-overlay { display: flex; align-items: center; justify-content: center; }
 .about-content-wrapper { text-align: center; max-width: 550px; width: 85%; padding-top: 40px; }
-.about-text { font-size: 22px; line-height: 1.5; color: #000; margin-bottom: 45px; font-weight: 400; letter-spacing: -0.01em; margin-bottom: 20px}
+.about-text { font-size: 22px; line-height: 1.5; color: #000; font-weight: 400; letter-spacing: -0.01em; margin-bottom: 20px}
 .about-email { display: block; text-decoration: none; color: #000; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 20px; opacity: 0.6; transition: 0.3s; }
 .instagram-text { color: #000; font-size: 10px; font-weight: 800; text-transform: uppercase; text-decoration: none; letter-spacing: 0.15em; transition: 0.3s; opacity: 0.6; margin-bottom: 20px;}
 
@@ -135,7 +136,6 @@ body {
     border: 1px dashed rgba(0,0,0,0.1);
 }
 
-/* Tiny Line Divider Styling */
 .grid-divider {
     grid-column: 1 / -1;
     display: flex;
@@ -177,13 +177,35 @@ body {
 
 /* --- RESPONSIVE ADJUSTMENTS --- */
 @media (max-width: 1100px) {
-    .seamless-grid { grid-template-columns: 1fr; padding: 120px 20px 80px; gap: 20px; }
-    .cat-item { height: 65svh; width: 100%; max-width: none; }
-    .grid-divider { margin: 40px 0 20px 0; }
-    .about-text { font-size: 19px; }
+    .seamless-grid { 
+        grid-template-columns: 1fr; 
+        padding: 120px 0px 80px; 
+        gap: 0px; 
+    }
+
+    .cat-item { 
+        height: auto; 
+        min-height: 70svh;
+        width: 100%; 
+        border: none;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05); 
+        background: transparent;
+    }
+
+    .cat-info {
+        background: transparent;
+        padding: 30px 20px;
+    }
+
+    .grid-divider { 
+        margin: 40px 20px 20px 20px;
+    }
+
+    /* Fixed Square on Mobile too */
     .ui-nav-mask { 
-        width: 100%; height: 280px; 
-        mask-image: radial-gradient(circle at 50px 50px, black 0%, transparent 70%);
-        -webkit-mask-image: radial-gradient(circle at 50px 50px, black 0%, transparent 70%);
+        width: 200px; 
+        height: 200px; 
+        mask-image: radial-gradient(circle at 45px 65px, black 0%, black 25%, transparent 70%);
+        -webkit-mask-image: radial-gradient(circle at 45px 65px, black 0%, black 25%, transparent 70%);
     }
 }
