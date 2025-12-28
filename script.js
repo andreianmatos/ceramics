@@ -2,19 +2,17 @@ document.body.style.overscrollBehavior = 'none';
 
 const CATALOGUE_DATA = {
     available: {
-        11: { title: "Mug", size: "", detail: "Industrial Form. Glazed." },
-        12: { title: "Mug", size: "", detail: "Industrial Form. Glazed." },
-        14: { title: "Little Bawl", size: "", detail: "Handbuilt. Glazed." },
-        24: { title: "Small vase", size: "", detail: "Handbuilt Form. Glazed." },
+        1: { title: "Mug", size: "", detail: "Industrial Form. Glazed." },
+        2: { title: "Little Bawl", size: "", detail: "Handbuilt. Glazed." },
+        3: { title: "Small vase", size: "", detail: "Handbuilt Form. Glazed." },
+        4: { title: "Little Bawl", size: "", detail: "Handbuilt. Glazed." },
+        5: { title: "Mug", size: "", detail: "Handbuilt. Glazed." },
     },
-     /*,unavailable: {
-        10: { title: "Mug", size: "", detail: "Industrial Form. Glazed. Piece broken below." },
+    unavailable: {
+        10: { title: "Mug", size: "", detail: "Archive Piece. Glazed." },
         4: { title: "Box with Lid", size: "", detail: "Handbuilt. Glazed." },
-        5: { title: "Small vase", size: "", detail: "Handbuilt. Glazed." },
-        18: { title: "Coffee Cup", size: "", detail: "Handbuilt. Glazed." },
-        8: { title: "Tiny Box", size: "", detail: "Handbuilt. Glazed." },
         7: { title: "Cup", size: "", detail: "Handbuilt. Glazed." },
-    } */
+    }
 };
 
 const CONFIG = {
@@ -128,7 +126,6 @@ function createPieceElement(imgObj) {
         if (!isDragging && !isPaused) {
             x += vx; 
             y += vy;
-            // Boundary checks
             if (x < 0 || x > window.innerWidth - canvas.offsetWidth) vx *= -1;
             if (y < 0 || y > window.innerHeight - canvas.offsetHeight) vy *= -1;
         }
@@ -141,8 +138,6 @@ function createPieceElement(imgObj) {
             isDragging = true;
             canvas.style.cursor = 'grabbing';
             canvas.setPointerCapture(e.pointerId);
-            
-            // Calculate where inside the piece the user clicked
             dragOffsetX = e.clientX - x;
             dragOffsetY = e.clientY - y;
         }
@@ -150,7 +145,6 @@ function createPieceElement(imgObj) {
 
     canvas.addEventListener('pointermove', (e) => {
         if (isDragging) {
-            // Move the piece relative to the initial grab point
             x = e.clientX - dragOffsetX;
             y = e.clientY - dragOffsetY;
         }
@@ -183,13 +177,23 @@ function revealPiecesSequentially() {
 
 async function initCatalogue() {
     const grid = document.querySelector('.seamless-grid');
+    let dividerAdded = false;
+
     for (const config of SELL_CONFIG) {
-        // Now using the CONFIG number instead of hardcoded 15
         for (let i = 1; i <= CONFIG.catalogue.maxToCheck; i++) {
             const mainSrc = `${config.path}${i}${FILE_EXT}`;
             const imgObj = await checkImageExists(mainSrc);
             
             if (imgObj) {
+                // Add the tiny line divider if we hit the archive/unavailable section
+                if (config.status === 'unavailable' && !dividerAdded) {
+                    const divider = document.createElement('div');
+                    divider.className = 'grid-divider';
+                    divider.innerHTML = '<span>Archive</span>';
+                    grid.appendChild(divider);
+                    dividerAdded = true;
+                }
+
                 const pieceInfo = (CATALOGUE_DATA[config.status] && CATALOGUE_DATA[config.status][i]) || { title: `Piece #${i}`, size: "", detail: "" };
                 const item = document.createElement('div');
                 item.className = `cat-item ${config.status}`;
@@ -208,7 +212,6 @@ async function initCatalogue() {
                 firstDot.className = 'dot active';
                 dotContainer.appendChild(firstDot);
 
-                // Check for detail images (1 through 4)
                 for (let d = 1; d <= 4; d++) {
                     const dSrc = `${config.path}${i}_${d}${FILE_EXT}`;
                     const dImgObj = await checkImageExists(dSrc);
