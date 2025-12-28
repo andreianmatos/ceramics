@@ -16,8 +16,8 @@ const CATALOGUE_DATA = {
 };
 
 const CONFIG = {
-    pieces: { minToLoad: 8, maxToLoad: 14, minScale: 0.15, maxScale: 0.20, fileRange: [1, 13] },
-    doodles: { minToShow: 6, maxToShow: 10, minScale: 0.35, maxScale: 1.0, minOpacity: 0.15, maxOpacity: 0.3, fileRange: [1, 8] },
+    pieces: { minToLoad: 8, maxToLoad: 13, minScale: 0.15, maxScale: 0.20, fileRange: [1, 13] },
+    doodles: { minToShow: 6, maxToShow: 9, minScale: 0.35, maxScale: 1.0, minOpacity: 0.15, maxOpacity: 0.3, fileRange: [1, 9] },
     catalogue: { maxToCheck: 50 }
 };
 
