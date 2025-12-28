@@ -10,12 +10,12 @@ body, html {
 
 body {
     background-color: #f4f1ea;
-    /* Updated dot color #ddd9ce */
     background-image: radial-gradient(#ddd9ce 1.2px, transparent 1.2px);
     background-size: 24px 24px;
+    color: black;
 }
 
-/* --- UI ELEMENTS --- */
+/* --- NAVIGATION (MATCHES ABOUT ME MENU) --- */
 .ui-nav-mask {
     position: fixed; 
     top: 0; left: 0; 
@@ -31,18 +31,43 @@ body {
 }
 
 #top-nav {
-    position: fixed; top: 40px; left: 45px; 
-    display: flex; flex-direction: column; gap: 10px; z-index: 11000;
+    position: fixed; 
+    top: 40px; 
+    left: 45px; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 15px; 
+    z-index: 11000;
 }
-.nav-link {
-    text-decoration: none; color: #000; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700;
-    opacity: 0.25; cursor: pointer; transition: 0.3s;
-    position: relative; width: fit-content;
-}
-.nav-link.active { opacity: 1; }
-.nav-link.active::before { content: '*'; position: absolute; left: -16px; top: -1px; }
 
-/* --- QUARTO (ROOM) --- */
+.nav-link {
+    text-decoration: none; 
+    color: #000; 
+    /* MATCHED: 1.1rem size and bold from your menu links */
+    font-size: 1.1rem; 
+    font-weight: 700;
+    text-transform: none; /* Removed uppercase */
+    opacity: 0.25; 
+    cursor: pointer; 
+    transition: 0.3s;
+    position: relative; 
+    width: fit-content;
+    margin-left: 20px; /* Gutter for asterisk */
+}
+
+.nav-link.active { 
+    opacity: 1; 
+}
+
+/* MATCHED: Asterisk behavior */
+.nav-link.active::before { 
+    content: '*'; 
+    position: absolute; 
+    left: -18px; 
+    top: 0; 
+}
+
+/* --- QUARTO (FLOATING PIECES) --- */
 #quarto-container { width: 100%; height: 100svh; transition: filter 0.8s ease; z-index: 10; }
 #quarto-container.dimmed { filter: blur(12px) grayscale(0.2); }
 .ceramic { 
@@ -58,41 +83,87 @@ body {
     position: fixed; top: 0; left: 0; width: 100%; height: 100svh;
     z-index: 5000; opacity: 0; visibility: hidden;
     transition: opacity 0.4s ease, visibility 0.4s ease;
-    background-color: #f4f1ea;
+    background-color: rgba(244, 241, 234, 0.9);
     background-image: radial-gradient(#ddd9ce 1.2px, transparent 1.2px);
     background-size: 24px 24px;
     overflow-y: auto;
+    backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
 }
 .overlay-open { opacity: 1; visibility: visible; }
 
-#about-overlay, #catalogue-overlay {
-    background-color: rgba(244, 241, 234, 0.85);
-    backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
+/* --- CONTACT SECTION (MATCHES ABOUT ME BODY STYLE) --- */
+#about-overlay { display: flex; align-items: center; justify-content: center; }
+
+.about-content-wrapper { 
+    text-align: center; 
+    max-width: 550px; 
+    width: 85%; 
+    padding-top: 40px;
+    line-height: 1.4;
 }
 
-/* --- ABOUT SECTION STYLING --- */
-#about-overlay { display: flex; align-items: center; justify-content: center; }
-.about-content-wrapper { text-align: center; max-width: 550px; width: 85%; padding-top: 40px; }
-.about-email { display: block; text-decoration: none; color: #000; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 20px; opacity: 0.6; transition: 0.3s; }
-.instagram-text { color: #000; font-size: 11px; font-weight: 700; text-transform: uppercase; text-decoration: none; letter-spacing: 0.15em; transition: 0.3s; opacity: 0.6; margin-bottom: 20px;}
+.about-email, .instagram-text { 
+    display: block; 
+    text-decoration: underline; /* Matches your About Me links */
+    color: #000; 
+    font-size: 1rem; 
+    font-weight: 400; 
+    text-transform: none; 
+    letter-spacing: normal; 
+    margin-bottom: 12px; 
+    opacity: 1; 
+    transition: 0.3s;
+}
 
-/* --- WORKING ON SECTION PLACEHOLDER --- */
+.about-email:hover, .instagram-text:hover {
+    color: gray;
+}
+
+.inquiry-text {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 20px 0;
+}
+
+/* --- WORKING MESSAGE (MATCHES ABOUT ME SUBTLE TEXT) --- */
 .working-message-container {
     width: 100%; height: 100svh;
     display: flex; align-items: center; justify-content: center;
 }
 .working-text {
     font-family: 'Archivo Narrow', sans-serif;
-    font-size: 13px; letter-spacing: 0.1em;
-    text-transform: uppercase; color: #000; opacity: 0.4;
+    font-size: 1rem; 
+    text-transform: none; 
+    color: #000; 
+    opacity: 0.4;
+    letter-spacing: normal;
 }
-.seamless-grid { display: none !important; } /* Hidden but preserved */
 
-/* --- RESPONSIVE --- */
-@media (max-width: 1100px) {
+/* --- CATALOGUE GRID STYLE --- */
+.seamless-grid { display: none !important; } /* Kept hidden as requested */
+
+/* --- RESPONSIVE (MATCHES ABOUT ME MOBILE) --- */
+@media (max-width: 800px) {
+    #top-nav {
+        left: 25px; 
+        top: 30px;
+    }
+
+    .nav-link {
+        font-size: 1.1rem; /* Keeps font size stable on mobile */
+    }
+
+    .nav-link.active::before { 
+        left: -20px; 
+    }
+
     .ui-nav-mask { 
         width: 200px; height: 200px; 
         mask-image: radial-gradient(circle at 45px 65px, black 0%, black 25%, transparent 70%);
         -webkit-mask-image: radial-gradient(circle at 45px 65px, black 0%, black 25%, transparent 70%);
+    }
+
+    .about-content-wrapper {
+        font-size: 0.95rem;
     }
 }

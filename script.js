@@ -92,10 +92,15 @@ function initQuarto() {
         let id = pool[i % pool.length];
         let img = new Image();
         img.src = `${FOLDERS[0]}${id}${FILE_EXT}`;
+        
+        // This starts trying to show the image as soon as it's ready 
+        // without waiting for its "turn" in a line
         img.onload = () => {
             const canvas = createPieceElement(img);
-            ceramicQueue.push(canvas);
-            if (ceramicQueue.length === 1) revealPiecesSequentially();
+            // Small timeout to allow the browser to register the element before animating
+            setTimeout(() => {
+                canvas.classList.add('appeared');
+            }, 50 * i); 
         };
     }
 }
@@ -280,4 +285,7 @@ navAbout.addEventListener('click', () => {
     isPaused = true;
 });
 
-window.addEventListener('load', () => { initQuarto(); initCatalogue(); });
+document.addEventListener('DOMContentLoaded', () => { 
+    initQuarto(); 
+    initCatalogue(); 
+});
