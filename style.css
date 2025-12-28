@@ -23,13 +23,39 @@ body {
 
 /* --- REFINED RADIAL BLUR --- */
 .ui-nav-mask {
-    position: fixed; top: 0; left: 0; 
-    width: 350px; height: 350px; 
-    z-index: 10000; pointer-events: none;
-    backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
-    mask-image: radial-gradient(circle at 65px 65px, black 0%, rgba(0,0,0,0.4) 30%, transparent 65%);
-    -webkit-mask-image: radial-gradient(circle at 65px 65px, black 0%, rgba(0,0,0,0.4) 30%, transparent 65%);
-    opacity: 1; 
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    /* 1. Make the container much larger so the gradient has room to disappear */
+    width: 300px; 
+    height: 300px; 
+    z-index: 10000; 
+    pointer-events: none;
+    
+    /* 2. Intense blur */
+    backdrop-filter: blur(60px); 
+    -webkit-backdrop-filter: blur(60px);
+
+    /* 3. THE SECRET TO SEAMLESS: 
+       We start solid black, but we MUST hit 'transparent' well before the 500px edge.
+       By stopping at 60%, the blur vanishes into thin air long before it hits the "square" edge. */
+    mask-image: radial-gradient(
+        circle at 65px 65px, 
+        black 0%, 
+        rgba(0, 0, 0, 1) 20%, 
+        rgba(0, 0, 0, 0.4) 40%, 
+        transparent 65%
+    );
+    -webkit-mask-image: radial-gradient(
+        circle at 65px 65px, 
+        black 0%, 
+        rgba(0, 0, 0, 1) 20%, 
+        rgba(0, 0, 0, 0.4) 40%, 
+        transparent 65%
+    );
+    
+    /* 4. Keep this at 1 for maximum intensity, the mask handles the softness */
+    opacity: 0.9; 
 }
 
 #top-nav {
@@ -80,9 +106,9 @@ body {
 /* --- ABOUT SECTION STYLING --- */
 #about-overlay { display: flex; align-items: center; justify-content: center; }
 .about-content-wrapper { text-align: center; max-width: 550px; width: 85%; padding-top: 40px; }
-.about-text { font-size: 22px; line-height: 1.5; color: #000; margin-bottom: 45px; font-weight: 400; letter-spacing: -0.01em; }
+.about-text { font-size: 22px; line-height: 1.5; color: #000; margin-bottom: 45px; font-weight: 400; letter-spacing: -0.01em; margin-bottom: 20px}
 .about-email { display: block; text-decoration: none; color: #000; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 20px; opacity: 0.6; transition: 0.3s; }
-.instagram-text { color: #cc0000; font-size: 11px; font-weight: 800; text-transform: uppercase; text-decoration: none; letter-spacing: 0.15em; transition: 0.3s; }
+.instagram-text { color: #000; font-size: 10px; font-weight: 800; text-transform: uppercase; text-decoration: none; letter-spacing: 0.15em; transition: 0.3s; opacity: 0.6; margin-bottom: 20px;}
 
 /* --- CATALOGUE GRID --- */
 .seamless-grid {

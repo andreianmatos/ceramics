@@ -9,9 +9,9 @@ const CATALOGUE_DATA = {
         5: { title: "Mug", size: "", detail: "Handbuilt. Glazed." },
     },
     unavailable: {
-        10: { title: "Mug", size: "", detail: "Archive Piece. Glazed." },
-        4: { title: "Box with Lid", size: "", detail: "Handbuilt. Glazed." },
-        7: { title: "Cup", size: "", detail: "Handbuilt. Glazed." },
+        1: { title: "Wall Piece", size: "", detail: "Handbuilt. Glazed." },
+        2: { title: "Box", size: "", detail: "Handbuilt. Glazed." },
+        3: { title: "Little Vase", size: "", detail: "Handbuilt. Glazed." },
     }
 };
 
