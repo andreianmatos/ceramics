@@ -185,7 +185,6 @@ async function initCatalogue() {
             const imgObj = await checkImageExists(mainSrc);
             
             if (imgObj) {
-                // Add the tiny line divider if we hit the archive/unavailable section
                 if (config.status === 'unavailable' && !dividerAdded) {
                     const divider = document.createElement('div');
                     divider.className = 'grid-divider';

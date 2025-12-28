@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Ceramics Portfolio</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- Updated Font Link -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -14,7 +17,7 @@
     <nav id="top-nav">
         <a id="nav-quarto" class="nav-link active">Home</a>
         <a id="nav-catalogo" class="nav-link">Pieces</a>
-        <a id="nav-about" class="nav-link">About</a>
+        <a id="nav-about" class="nav-link">Contact</a>
     </nav>
 
     <div id="quarto-container">
@@ -23,18 +26,23 @@
     </div>
 
     <div id="catalogue-overlay" class="overlay">
+        <!-- Working Message Section -->
+        <div class="working-message-container">
+            <p class="working-text">[ working on this section ]</p>
+        </div>
+        <!-- Grid remains in HTML but hidden by CSS -->
         <div class="seamless-grid"></div>
     </div>
 
     <div id="about-overlay" class="overlay">
-    <div class="about-content-wrapper">
-        <p class="inquiry-text">*</p>
-        <a href="mailto:andreiangmatos@gmail.com" class="about-email">andreiangmatos@gmail.com</a>
-        <a href="https://www.instagram.com/andreiangmatos/" class="instagram-text" target="_blank" rel="noopener noreferrer">@ANDREIANGMATOS</a>
-        <br> 
-        <p class="inquiry-text">*</p>
+        <div class="about-content-wrapper">
+            <p class="inquiry-text">*</p>
+            <a href="mailto:andreiangmatos@gmail.com" class="about-email">andreiangmatos@gmail.com</a>
+            <a href="https://www.instagram.com/andreiangmatos/" class="instagram-text" target="_blank" rel="noopener noreferrer">@ANDREIANGMATOS</a>
+            <br> 
+            <p class="inquiry-text">*</p>
+        </div>
     </div>
-</div>
 
     <script src="script.js"></script>
 </body>
